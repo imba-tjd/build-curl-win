@@ -1,0 +1,45 @@
+name: build
+on:
+  push:
+  workflow_dispatch:
+  
+env:
+  CW_MAP: '1'
+  CW_JOBS: '5'
+  DO_NOT_TRACK: '1'
+  DOCKER_IMAGE: 'debian:slim'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@main
+        with:
+          repository: curl/curl-for-win
+          fetch-depth: '100'
+      - name: 'build'
+        env:
+          CW_LLVM_MINGW_DL: '1'
+          CW_LLVM_MINGW_ONLY: '0'
+        run: |
+          export CW_CONFIG='main-pico'
+          export CW_REVISION='${{ github.sha }}'
+          . ./_versions.sh
+          docker trust inspect --pretty "${DOCKER_IMAGE}"
+          time docker pull "${DOCKER_IMAGE}"
+          docker images --digests
+          time docker run --volume "$(pwd):$(pwd)" --workdir "$(pwd)" \
+            --env-file <(env | grep -a -E \
+              '^(CW_|GITHUB_|DO_NOT_TRACK)') \
+            "${DOCKER_IMAGE}" \
+            sh -c ./_ci-linux-debian.sh
+
+      - name: 'list dependencies'
+        run: cat urls.txt *-version-*.txt || true
+      - uses: actions/upload-artifact@main
+        with:
+          name: 'curl-win-pico'
+          path: |
+            *-*-mingw*.*
+            urls.txt
