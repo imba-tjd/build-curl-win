@@ -9,7 +9,6 @@ env:
   CW_LLVM_MINGW_DL: '1'
   CW_LLVM_MINGW_ONLY: '0'
   CW_CONFIG: main-win-gcc-pico-ostls
- # CW_REVISION: ${{ github.sha }}
 
 jobs:
   build:
@@ -33,7 +32,9 @@ jobs:
             sh -c ./_ci-linux-debian.sh
 
       - name: 'list dependencies'
-        run: cat urls.txt *-version-*.txt || true
+        run: |
+          rm *.xz *.xz.txt
+          cat urls.txt *-version-*.txt || true
       - uses: actions/upload-artifact@main
         with:
           name: 'curl-win-pico'
