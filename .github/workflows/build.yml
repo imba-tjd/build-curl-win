@@ -4,27 +4,24 @@ on:
   workflow_dispatch:
   
 env:
-  CW_MAP: '1'
-  CW_JOBS: '5'
   DO_NOT_TRACK: '1'
-  DOCKER_IMAGE: 'debian:slim'
+  DOCKER_IMAGE: debian:slim
+  CW_LLVM_MINGW_DL: '1'
+  CW_LLVM_MINGW_ONLY: '0'
+  CW_CONFIG: main-win-gcc-pico-ostls
+ # CW_REVISION: ${{ github.sha }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@main
         with:
           repository: curl/curl-for-win
-          fetch-depth: '100'
+          fetch-depth: '10'
       - name: 'build'
-        env:
-          CW_LLVM_MINGW_DL: '1'
-          CW_LLVM_MINGW_ONLY: '0'
         run: |
-          export CW_CONFIG='main-win-gcc-pico'
-          export CW_REVISION='${{ github.sha }}'
           . ./_versions.sh
           docker trust inspect --pretty "${DOCKER_IMAGE}"
           time docker pull "${DOCKER_IMAGE}"
