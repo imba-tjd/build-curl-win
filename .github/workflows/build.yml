@@ -8,7 +8,7 @@ env:
   DOCKER_IMAGE: debian:slim
   CW_LLVM_MINGW_DL: '1'
   CW_LLVM_MINGW_ONLY: '0'
-  CW_CONFIG: main-win-gcc-mini
+  CW_CONFIG: main-win-gcc-pico
 
 jobs:
   build:
