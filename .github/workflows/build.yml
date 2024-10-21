@@ -4,8 +4,6 @@ on:
   workflow_dispatch:
   
 env:
-  DO_NOT_TRACK: '1'
-  DOCKER_IMAGE: debian:slim
   CW_LLVM_MINGW_DL: '1'
   CW_LLVM_MINGW_ONLY: '0'
   CW_CONFIG: main-win-gcc-pico
@@ -37,7 +35,7 @@ jobs:
           cat urls.txt *-version-*.txt || true
       - uses: actions/upload-artifact@main
         with:
-          name: 'curl-win-pico'
+          name: 'curl-win-gcc-pico'
           path: |
             *-*-mingw*.*
             urls.txt
